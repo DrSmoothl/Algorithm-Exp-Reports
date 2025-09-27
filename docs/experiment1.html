@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实验一：鱼与熊掌兼得问题 - 数据结构与算法实验报告</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0ea5e9;
+            --primary-dark: #0284c7;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        }
+        
+        .section-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .code-block {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .algorithm-step {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-left: 4px solid #10b981;
+        }
+        
+        .complexity-analysis {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+            border-left: 4px solid #f59e0b;
+        }
+        
+        pre[class*="language-"] {
+            margin: 0;
+            padding: 1.5rem;
+            background: #1e293b !important;
+        }
+        
+        code[class*="language-"] {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        
+        .line-numbers {
+            counter-reset: linenumber;
+        }
+        
+        .line-numbers > span {
+            position: relative;
+            counter-increment: linenumber;
+        }
+        
+        .line-numbers > span:before {
+            content: counter(linenumber);
+            position: absolute;
+            left: -2.5em;
+            color: #64748b;
+            font-size: 0.9em;
+            text-align: right;
+            width: 2em;
+        }
+        
+        .toc {
+            position: sticky;
+            top: 2rem;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+        
+        .toc-item {
+            transition: all 0.2s ease;
+        }
+        
+        .toc-item:hover {
+            background-color: #e0f2fe;
+            border-radius: 8px;
+        }
+        
+        .toc-item.active {
+            background-color: #0ea5e9;
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .test-case {
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+            border: 2px solid #a855f7;
+        }
+        
+        .input-output {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .math-formula {
+            background: linear-gradient(135deg, #fef7cd, #fde68a);
+            border: 2px solid #eab308;
+        }
+        
+        @media (max-width: 768px) {
+            .toc {
+                position: static;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100">
+    <!-- 导航栏 -->
+    <div class="navbar gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="flex-1">
+            <a href="index.html" class="btn btn-ghost text-xl font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                返回主页
+            </a>
+        </div>
+        <div class="flex-none">
+            <div class="badge badge-success badge-lg">实验一</div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- 目录导航 -->
+            <div class="lg:col-span-1">
+                <div class="card bg-white shadow-xl toc">
+                    <div class="card-body">
+                        <h3 class="card-title text-lg mb-4">目录导航</h3>
+                        <ul class="menu menu-sm space-y-2">
+                            <li><a href="#problem" class="toc-item">问题描述</a></li>
+                            <li><a href="#analysis" class="toc-item">问题分析</a></li>
+                            <li><a href="#algorithm" class="toc-item">算法设计</a></li>
+                            <li><a href="#implementation" class="toc-item">代码实现</a></li>
+                            <li><a href="#complexity" class="toc-item">复杂度分析</a></li>
+                            <li><a href="#test" class="toc-item">测试用例</a></li>
+                            <li><a href="#optimization" class="toc-item">优化思路</a></li>
+                            <li><a href="#summary" class="toc-item">总结</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要内容 -->
+            <div class="lg:col-span-3 space-y-8">
+                <!-- 标题区域 -->
+                <div class="hero min-h-[30vh] bg-gradient-to-r from-sky-400 to-blue-500 rounded-3xl text-white fade-in">
+                    <div class="hero-content text-center">
+                        <div class="max-w-md">
+                            <h1 class="text-4xl font-bold mb-4">实验一</h1>
+                            <h2 class="text-2xl font-semibold mb-4">鱼与熊掌兼得问题</h2>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <div class="badge badge-lg bg-white text-sky-600">位运算</div>
+                                <div class="badge badge-lg bg-white text-sky-600">哈希表</div>
+                                <div class="badge badge-lg bg-white text-sky-600">集合操作</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 问题描述 -->
+                <section id="problem" class="card section-card shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            问题描述
+                        </h2>
+                        
+                        <div class="bg-yellow-50 p-6 rounded-xl mb-6 border-l-4 border-yellow-400">
+                            <h3 class="text-lg font-semibold mb-3 text-gray-800">题目背景</h3>
+                            <p class="text-gray-700 leading-relaxed mb-4">
+                                《孟子·告子上》有名言："鱼，我所欲也，熊掌，亦我所欲也；二者不可得兼，舍鱼而取熊掌者也。"
+                                但这世界上还是有一些人可以做到鱼与熊掌兼得的。
+                            </p>
+                            <p class="text-gray-700 leading-relaxed">
+                                给定 n 个人对 m 种物品的拥有关系。对其中任意一对物品种类（例如"鱼与熊掌"），请你统计有多少人能够兼得？
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="input-output rounded-xl p-4">
+                                <h4 class="font-semibold mb-3 text-gray-800">输入格式</h4>
+                                <ul class="text-sm text-gray-600 space-y-2">
+                                    <li>• 第一行：n（≤10⁵）和 m（2≤m≤10⁵）</li>
+                                    <li>• 接下来 n 行：每行描述一个人的物品清单</li>
+                                    <li>• 格式：K M[1] M[2] ... M[K]</li>
+                                    <li>• 最后：查询总数 Q（≤100）</li>
+                                    <li>• Q 行查询：每行两个物品编号</li>
+                                </ul>
+                            </div>
+                            <div class="input-output rounded-xl p-4">
+                                <h4 class="font-semibold mb-3 text-gray-800">输出格式</h4>
+                                <p class="text-sm text-gray-600">对每次查询，输出同时拥有两种物品的人数。</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 问题分析 -->
+                <section id="analysis" class="card section-card shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                            问题分析
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <div class="alert alert-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>这是一个典型的集合交集统计问题，需要高效处理多次查询。</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-blue-50 p-6 rounded-xl">
+                                    <h3 class="text-lg font-semibold mb-3 text-blue-800">关键观察</h3>
+                                    <ul class="text-blue-700 space-y-2">
+                                        <li>• 每个人拥有的物品可以用集合表示</li>
+                                        <li>• 查询本质是求集合交集的个数</li>
+                                        <li>• 需要处理多次查询，考虑缓存优化</li>
+                                        <li>• 物品数量较大，需要高效的数据结构</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-green-50 p-6 rounded-xl">
+                                    <h3 class="text-lg font-semibold mb-3 text-green-800">数据规模</h3>
+                                    <ul class="text-green-700 space-y-2">
+                                        <li>• n ≤ 10⁵（人数）</li>
+                                        <li>• m ≤ 10⁵（物品种类）</li>
+                                        <li>• Q ≤ 100（查询次数）</li>
+                                        <li>• K ≤ 10³（每人物品数）</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 算法设计 -->
+                <section id="algorithm" class="card algorithm-step shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                            算法设计
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-xl border-2 border-green-200">
+                                <h3 class="text-lg font-semibold mb-4 text-green-800">核心思路</h3>
+                                <div class="steps steps-vertical lg:steps-horizontal">
+                                    <div class="step step-primary">使用bitset存储每人的物品集合</div>
+                                    <div class="step step-primary">位运算快速计算集合交集</div>
+                                    <div class="step step-primary">哈希表缓存查询结果</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-indigo-50 p-6 rounded-xl">
+                                    <h4 class="font-semibold mb-3 text-indigo-800">数据结构选择</h4>
+                                    <ul class="text-indigo-700 space-y-2">
+                                        <li><strong>bitset&lt;MAXM+1&gt;</strong>：存储每人的物品集合</li>
+                                        <li><strong>unordered_map</strong>：缓存查询结果</li>
+                                        <li><strong>位运算</strong>：test() 和 AND 操作</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-purple-50 p-6 rounded-xl">
+                                    <h4 class="font-semibold mb-3 text-purple-800">优化策略</h4>
+                                    <ul class="text-purple-700 space-y-2">
+                                        <li><strong>缓存机制</strong>：避免重复计算</li>
+                                        <li><strong>位运算</strong>：O(1) 集合操作</li>
+                                        <li><strong>内存优化</strong>：紧凑的数据表示</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="math-formula p-6 rounded-xl">
+                                <h4 class="font-semibold mb-3 text-yellow-800">算法步骤</h4>
+                                <ol class="text-yellow-700 space-y-2 list-decimal list-inside">
+                                    <li>读取输入，为每个人创建 bitset 集合</li>
+                                    <li>对每个物品编号，在对应位置设置为 1</li>
+                                    <li>处理查询时，首先检查缓存</li>
+                                    <li>如果缓存未命中，遍历所有人计算交集</li>
+                                    <li>将结果存入缓存并返回</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 代码实现 -->
+                <section id="implementation" class="card bg-white shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                            </svg>
+                            代码实现
+                        </h2>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-cpp line-numbers">#include <iostream>
+#include <vector>
+#include <bitset>
+#include <unordered_map>
+using namespace std;
+
+const int MAXM = 100000;
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+    
+    // 使用 bitset 存储每个人的物品集合
+    vector<bitset<MAXM+1>> people(n);
+    
+    // 读取每个人的物品清单
+    for (int i = 0; i < n; i++) {
+        int k;
+        scanf("%d", &k);
+        for (int j = 0; j < k; j++) {
+            int item;
+            scanf("%d", &item);
+            people[i].set(item);  // 在对应位置设置为1
+        }
+    }
+    
+    int q;
+    scanf("%d", &q);
+    
+    // 使用哈希表缓存查询结果
+    unordered_map<long long, int> cache;
+    
+    while (q--) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+        
+        // 生成唯一的缓存键
+        long long key = (long long)a * (m + 1) + b;
+        if (cache.count(key)) {
+            printf("%d\n", cache[key]);
+            continue;
+        }
+        
+        // 计算同时拥有物品 a 和 b 的人数
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (people[i].test(a) && people[i].test(b)) {
+                count++;
+            }
+        }
+        
+        // 缓存结果
+        cache[key] = count;
+        printf("%d\n", count);
+    }
+    
+    return 0;
+}</code></pre>
+                        </div>
+
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-blue-50 p-4 rounded-xl">
+                                <h4 class="font-semibold mb-2 text-blue-800">关键代码解析</h4>
+                                <ul class="text-sm text-blue-700 space-y-1">
+                                    <li><code>bitset&lt;MAXM+1&gt;</code>：高效的位集合</li>
+                                    <li><code>people[i].set(item)</code>：设置物品位</li>
+                                    <li><code>people[i].test(a)</code>：检查物品位</li>
+                                    <li><code>unordered_map</code>：O(1) 查询缓存</li>
+                                </ul>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-xl">
+                                <h4 class="font-semibold mb-2 text-green-800">优化亮点</h4>
+                                <ul class="text-sm text-green-700 space-y-1">
+                                    <li>位运算替代集合操作</li>
+                                    <li>缓存机制避免重复计算</li>
+                                    <li>紧凑的内存使用</li>
+                                    <li>快速的查询响应</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 复杂度分析 -->
+                <section id="complexity" class="card complexity-analysis shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            复杂度分析
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl border-2 border-orange-200">
+                                <h3 class="text-lg font-semibold mb-4 text-orange-800">时间复杂度</h3>
+                                <div class="space-y-4">
+                                    <div class="bg-orange-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold text-orange-700">预处理阶段</h4>
+                                        <p class="text-orange-600 font-mono">O(n × K)</p>
+                                        <p class="text-sm text-orange-600">读取并设置每个人的物品集合</p>
+                                    </div>
+                                    <div class="bg-orange-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold text-orange-700">查询阶段</h4>
+                                        <p class="text-orange-600 font-mono">O(Q × n) (最坏情况)</p>
+                                        <p class="text-sm text-orange-600">每次查询遍历所有人，有缓存优化</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl border-2 border-purple-200">
+                                <h3 class="text-lg font-semibold mb-4 text-purple-800">空间复杂度</h3>
+                                <div class="space-y-4">
+                                    <div class="bg-purple-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold text-purple-700">主要存储</h4>
+                                        <p class="text-purple-600 font-mono">O(n × m/8)</p>
+                                        <p class="text-sm text-purple-600">bitset 紧凑存储，每位1bit</p>
+                                    </div>
+                                    <div class="bg-purple-50 p-4 rounded-lg">
+                                        <h4 class="font-semibold text-purple-700">缓存存储</h4>
+                                        <p class="text-purple-600 font-mono">O(Q)</p>
+                                        <p class="text-sm text-purple-600">哈希表存储查询结果</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-yellow-50 p-6 rounded-xl border-2 border-yellow-300">
+                            <h3 class="text-lg font-semibold mb-3 text-yellow-800">性能优势</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-yellow-700">8倍</div>
+                                    <div class="text-sm text-yellow-600">内存压缩率</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-yellow-700">O(1)</div>
+                                    <div class="text-sm text-yellow-600">位操作复杂度</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-bold text-yellow-700">缓存</div>
+                                    <div class="text-sm text-yellow-600">避免重复计算</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 测试用例 -->
+                <section id="test" class="card test-case shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            测试用例分析
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-xl border-2 border-indigo-200">
+                                <h3 class="text-lg font-semibold mb-4 text-indigo-800">输入样例</h3>
+                                <pre class="input-output p-4 rounded-lg text-sm"><code>4 8
+3 4 1 8
+4 7 1 8 4
+5 6 5 1 2 3
+4 3 2 4 8
+3
+2 3
+7 6
+8 4</code></pre>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl border-2 border-green-200">
+                                <h3 class="text-lg font-semibold mb-4 text-green-800">输出结果</h3>
+                                <pre class="input-output p-4 rounded-lg text-sm"><code>2
+0
+3</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-violet-50 p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-4 text-violet-800">详细分析</h3>
+                            <div class="overflow-x-auto">
+                                <table class="table table-zebra w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>人员</th>
+                                            <th>拥有物品</th>
+                                            <th>物品2</th>
+                                            <th>物品3</th>
+                                            <th>物品7</th>
+                                            <th>物品6</th>
+                                            <th>物品8</th>
+                                            <th>物品4</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>人员1</td>
+                                            <td>{4, 1, 8}</td>
+                                            <td>❌</td>
+                                            <td>❌</td>
+                                            <td>❌</td>
+                                            <td>❌</td>
+                                            <td>✅</td>
+                                            <td>✅</td>
+                                        </tr>
+                                        <tr>
+                                            <td>人员2</td>
+                                            <td>{7, 1, 8, 4}</td>
+                                            <td>❌</td>
+                                            <td>❌</td>
+                                            <td>✅</td>
+                                            <td>❌</td>
+                                            <td>✅</td>
+                                            <td>✅</td>
+                                        </tr>
+                                        <tr>
+                                            <td>人员3</td>
+                                            <td>{6, 5, 1, 2, 3}</td>
+                                            <td>✅</td>
+                                            <td>✅</td>
+                                            <td>❌</td>
+                                            <td>✅</td>
+                                            <td>❌</td>
+                                            <td>❌</td>
+                                        </tr>
+                                        <tr>
+                                            <td>人员4</td>
+                                            <td>{3, 2, 4, 8}</td>
+                                            <td>✅</td>
+                                            <td>✅</td>
+                                            <td>❌</td>
+                                            <td>❌</td>
+                                            <td>✅</td>
+                                            <td>✅</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="alert alert-info">
+                                    <span><strong>查询 (2,3):</strong> 人员3和人员4同时拥有 → 答案: 2</span>
+                                </div>
+                                <div class="alert alert-warning">
+                                    <span><strong>查询 (7,6):</strong> 无人同时拥有 → 答案: 0</span>
+                                </div>
+                                <div class="alert alert-success">
+                                    <span><strong>查询 (8,4):</strong> 人员1、2、4同时拥有 → 答案: 3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 优化思路 -->
+                <section id="optimization" class="card bg-white shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl text-gray-800 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            优化思路
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-xl border border-blue-200">
+                                <h3 class="text-lg font-semibold mb-4 text-blue-800">当前优化</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <div class="badge badge-success badge-sm mr-3 mt-1">✓</div>
+                                        <div>
+                                            <strong>bitset优化：</strong>
+                                            <p class="text-sm text-blue-600">使用位运算替代集合操作，内存压缩8倍</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="badge badge-success badge-sm mr-3 mt-1">✓</div>
+                                        <div>
+                                            <strong>缓存机制：</strong>
+                                            <p class="text-sm text-blue-600">哈希表存储查询结果，避免重复计算</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="badge badge-success badge-sm mr-3 mt-1">✓</div>
+                                        <div>
+                                            <strong>内存对齐：</strong>
+                                            <p class="text-sm text-blue-600">bitset自动优化内存对齐和访问</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-xl border border-green-200">
+                                <h3 class="text-lg font-semibold mb-4 text-green-800">进阶优化</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <div class="badge badge-info badge-sm mr-3 mt-1">+</div>
+                                        <div>
+                                            <strong>并行处理：</strong>
+                                            <p class="text-sm text-green-600">多线程并行处理查询，提升吞吐量</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="badge badge-info badge-sm mr-3 mt-1">+</div>
+                                        <div>
+                                            <strong>预计算：</strong>
+                                            <p class="text-sm text-green-600">预计算热门物品对的交集结果</p>
+                                        </div>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <div class="badge badge-info badge-sm mr-3 mt-1">+</div>
+                                        <div>
+                                            <strong>分块优化：</strong>
+                                            <p class="text-sm text-green-600">将人员分块，利用局部性原理</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-yellow-50 p-6 rounded-xl border-2 border-yellow-300">
+                            <h3 class="text-lg font-semibold mb-3 text-yellow-800">性能对比</h3>
+                            <div class="overflow-x-auto">
+                                <table class="table table-compact w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>方法</th>
+                                            <th>时间复杂度</th>
+                                            <th>空间复杂度</th>
+                                            <th>优缺点</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>朴素方法</strong></td>
+                                            <td>O(Q × n × K)</td>
+                                            <td>O(n × K)</td>
+                                            <td class="text-red-600">慢，内存大</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>bitset方法</strong></td>
+                                            <td>O(Q × n)</td>
+                                            <td>O(n × m/8)</td>
+                                            <td class="text-green-600">快，内存优化</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>bitset+缓存</strong></td>
+                                            <td>O(Q + unique × n)</td>
+                                            <td>O(n × m/8 + Q)</td>
+                                            <td class="text-blue-600">最优解</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 总结 -->
+                <section id="summary" class="card bg-gradient-to-r from-sky-400 to-blue-500 text-white shadow-xl fade-in">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                            实验总结
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3">核心收获</h3>
+                                <ul class="space-y-2 text-white/90">
+                                    <li>• 掌握了 bitset 的高效使用方法</li>
+                                    <li>• 理解了位运算在集合操作中的优势</li>
+                                    <li>• 学会了缓存机制优化重复查询</li>
+                                    <li>• 体验了内存与时间的权衡策略</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3">技术亮点</h3>
+                                <ul class="space-y-2 text-white/90">
+                                    <li>• 位运算实现 O(1) 集合操作</li>
+                                    <li>• 哈希表提供 O(1) 查询缓存</li>
+                                    <li>• 紧凑数据结构节省内存空间</li>
+                                    <li>• 算法复杂度从 O(nK) 降至 O(n)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-white/10 p-4 rounded-xl">
+                            <p class="text-center text-lg">
+                                <strong>本实验展示了如何通过合理的数据结构选择和算法优化，</strong><br>
+                                <strong>将看似简单的问题转化为高效、优雅的解决方案。</strong>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 返回按钮 -->
+                <div class="text-center">
+                    <a href="index.html" class="btn btn-primary btn-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        返回实验列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 目录导航高亮
+        const tocItems = document.querySelectorAll('.toc-item');
+        const sections = document.querySelectorAll('section[id]');
+
+        function updateActiveSection() {
+            let currentSection = '';
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentSection = section.id;
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${currentSection}`) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveSection);
+        updateActiveSection();
+
+        // 平滑滚动
+        tocItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 添加进入动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = `opacity 0.8s ease ${index * 0.1}s, transform 0.8s ease ${index * 0.1}s`;
+            observer.observe(el);
+        });
+
+        // 代码高亮后处理
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为代码块添加行号
+            const codeBlocks = document.querySelectorAll('pre code.language-cpp');
+            codeBlocks.forEach(block => {
+                const lines = block.textContent.split('\n').filter(line => line.trim() !== '');
+                const lineNumbersHtml = lines.map((_, index) => 
+                    `<span style="color: #64748b; margin-right: 1em; user-select: none;">${(index + 1).toString().padStart(2, ' ')}</span>`
+                ).join('\n');
+                
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex';
+                wrapper.innerHTML = `
+                    <div style="padding: 1.5rem 0; line-height: 1.6; font-family: 'Consolas', 'Monaco', 'Courier New', monospace;">
+                        ${lineNumbersHtml}
+                    </div>
+                    <div style="flex: 1;">${block.outerHTML}</div>
+                `;
+                
+                block.parentNode.replaceChild(wrapper, block);
+            });
+        });
+    </script>
+</body>
+</html>
